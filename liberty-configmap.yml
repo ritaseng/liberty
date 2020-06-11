@@ -66,9 +66,9 @@ data:
             <jdbcDriver libraryRef="db2Lib" 
                    javax.sql.ConnectionPoolDataSource="com.ibm.db2.jcc.DB2ConnectionPoolDataSource"/>
             <properties.db2.jcc 
-              databaseName="GDWAGM" 
+              databaseName="" 
               driverType="4" 
-              serverName="10.112.220.226" 
+              serverName="" 
               portNumber="50000" 
               currentLockTimeout="10"
               cursorSensitivity="0"
@@ -77,8 +77,8 @@ data:
               resultSetHoldability="1"
               retrieveMessagesFromServerOnGetMessage="true"
               traceLevel="-1" 
-              user="gacdwadm" 
-              password="RuscnyJPW9YH44xZ"/>
+              user="" 
+              password=""/>
             <connectionManager connectionTimeout="180" maxPoolSize="10" minPoolSize="1" reapTime="180" 
               maxIdleTime="1800" agedTimeout="7200" purgePolicy="EntirePool"/>
          </dataSource>
