@@ -35,4 +35,4 @@ spec:
           mountPath: /opt/ibm/wlp/usr/servers/defaultServer/server.xml
           subPath: server.xml
         - name: dropins
-          mountPath: /opt/ibm/wlp/usr/servers/defaultServer/dropins
+          mountPath: /opt/ibm/wlp/usr/servers/defaultServer/apps
