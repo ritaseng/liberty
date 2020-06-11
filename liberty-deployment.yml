@@ -13,14 +13,7 @@ spec:
     metadata:
       labels:
         app: liberty
-    volumes:
-        - name: liberty-serverxml
-          configMap:
-            name: liberty-serverxml
-        - name: dropins
-          nfs:
-            server: 10.112.220.202
-            path: /app/IKS
+    
     spec:
       containers:
       - name: liberty-container
@@ -30,7 +23,15 @@ spec:
           name: http
         - containerPort: 9443
           name: https
-        volumeMount:
+      volumes:
+        - name: liberty-serverxml
+          configMap:
+            name: liberty-serverxml
+        - name: dropins
+          nfs:
+            server: 10.112.220.202
+            path: /app/IKS
+        volumeMounts:
         - name: liberty-serverxml
           mountPath: /opt/ibm/wlp/usr/servers/defaultServer/server.xml
           subPath: server.xml
