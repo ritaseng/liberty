@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: liberty-deployment
+  namespace: cdielk
+  labels:
+    app: liberty
+spec:
+  selector:
+    matchLabels:
+      app: liberty
+  template:
+    metadata:
+      labels:
+        app: liberty
+    volumes:
+        - name: liberty-serverxml
+          configMap:
+            name: liberty-serverxml
+        - name: dropins
+          nfs:
+            server: 10.112.220.202
+            path: /app/IKS
+    spec:
+      containers:
+      - name: liberty-container
+        image: docker.io/websphere-liberty:latest
+        ports:
+        - containerPort: 9080
+          name: http
+        - containerPort: 9443
+          name: https
+        volumeMount:
+        - name: liberty-serverxml
+          mountPath: /opt/ibm/wlp/usr/servers/defaultServer/server.xml
+          subPath: server.xml
+        - name: dropins
+          mountPath: /opt/ibm/wlp/usr/servers/defaultServer/dropins
