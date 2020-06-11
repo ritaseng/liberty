@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: cdielk
+  name: liberty-serverxml
+  labels:
+    app: liberty
+data:
+  server.xml: |-
+     <?xml version="1.0" encoding="UTF-8"?>
+     <server description="Default server">
+         
+          <!-- Enable features -->
+          <featureManager>
+             <feature>javaee-8.0</feature>
+             <feature>microProfile-3.0</feature>
+             <feature>appSecurity-2.0</feature>
+             <feature>ldapRegistry-3.0</feature>
+             <feature>jndi-1.0</feature>
+             <feature>jdbc-4.2</feature>
+             <feature>openidConnectClient-1.0</feature>
+             <feature>restConnector-2.0</feature>
+          </featureManager>
+
+         <!-- This template enables security. To get the full use of all the capabilities, a keystore and user registry are required. -->
+    
+         <!-- For the keystore, default keys are generated and stored in a keystore. To provide the keystore password, generate an 
+         encoded password using bin/securityUtility encode and add it below in the password attribute of the keyStore element. 
+         Then uncomment the keyStore element. -->
+         <!--
+         <keyStore password=""/> 
+         -->
+    
+         <!--For a user registry configuration, configure your user registry. For example, configure a basic user registry using the
+         basicRegistry element. Specify your own user name below in the name attribute of the user element. For the password, 
+         generate an encoded password using bin/securityUtility encode and add it in the password attribute of the user element. 
+         Then uncomment the user element. -->
+         <basicRegistry id="basic" realm="BasicRealm"> 
+         <!-- <user name="yourUserName" password="" />  --> 
+         </basicRegistry>
+    
+         <!-- To allow access to this server from a remote client host="*" has been added to the following element -->
+         <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="9080"
+                  httpsPort="9443" />
+                  
+         <!-- Automatically expand WAR files and EAR files -->
+         <applicationManager autoExpand="true"/>
+         <ldapRegistry baseDN="o=ibm.com" host="10.90.109.175" id="Blue Pages" ldapType="IBM Tivoli Directory Server" port="389" realm="PATLdapRegistry" sslEnabled="false">
+
+                <idsFilters groupFilter="(&amp;(cn=%v)(objectclass=groupOfUniqueNames))" groupMemberIdMap="groupOfUniqueNames:uniquemember" userFilter="(&amp;(emailAddress=%v)(objectclass=ibmPerson))" userIdMap="*:mail"/>
+         </ldapRegistry>
+         <library id="db2Lib">                
+          <fileset dir="/opt/ibm/wlp/usr/servers/defaultServer/apps" includes="db2jcc4.jar db2jcc_license_cu.jar db2jcc_license_cisuz.jar"/>    
+         </library>
+         <dataSource id="DefaultDB2Datasource" jndiName="jdbc/DefaultDB2Datasource" 
+              statementCacheSize="10"  
+              beginTranForResultSetScrollingAPIs="false" 
+              beginTranForVendorAPIs="false"
+              connectionSharing="MatchCurrentState" 
+              transactional="false"
+              syncQueryTimeoutWithTransactionTimeout="false"
+              isolationLevel="TRANSACTION_READ_COMMITTED" 
+              queryTimeout="10">
+            <jdbcDriver libraryRef="db2Lib" 
+                   javax.sql.ConnectionPoolDataSource="com.ibm.db2.jcc.DB2ConnectionPoolDataSource"/>
+            <properties.db2.jcc 
+              databaseName="GDWAGM" 
+              driverType="4" 
+              serverName="10.112.220.226" 
+              portNumber="50000" 
+              currentLockTimeout="10"
+              cursorSensitivity="0"
+              deferPrepares="true"
+              loginTimeout="0" 
+              resultSetHoldability="1"
+              retrieveMessagesFromServerOnGetMessage="true"
+              traceLevel="-1" 
+              user="gacdwadm" 
+              password="RuscnyJPW9YH44xZ"/>
+            <connectionManager connectionTimeout="180" maxPoolSize="10" minPoolSize="1" reapTime="180" 
+              maxIdleTime="1800" agedTimeout="7200" purgePolicy="EntirePool"/>
+         </dataSource>
+         <application type="war" id="CDI-Analytics" name="CDI-Analytics" location="/opt/ibm/wlp/usr/servers/defaultServer/apps/CDI-Analytics.war" context-root="CDI-Analytics">
+                <application-bnd>
+                        <security-role name="CDISSO">
+                                <special-subject type="ALL_AUTHENTICATED_USERS" />
+                        </security-role>
+                </application-bnd>
+         </application>
+         <application type="war" id="cdi_platform_services" name="cdi_platform_services" location="/opt/ibm/wlp/usr/servers/defaultServer/apps/cdi_platform_services_apis_V53.war" context-root="CDI-PLATFORM-SERVICES">
+                <application-bnd>
+                        <security-role name="CDISSO">
+                                <special-subject type="ALL_AUTHENTICATED_USERS" />
+                        </security-role>
+                </application-bnd>
+         </application>
+      </server>
