@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: liberty
+  name: liberty-deployment
+  namespace: cdielk2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: liberty
+  template:
+    metadata:
+      labels:
+        app: liberty
+    spec:
+      containers:
+      - image: docker.io/ritaseng/my-images:liberty_full
+        imagePullPolicy: IfNotPresent
+        name: liberty-container
+        ports:
+        - containerPort: 9080
+          name: http
+          protocol: TCP
+        - containerPort: 9443
+          name: https
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /opt/ibm/wlp/usr/servers/defaultServer/server.xml
+          name: liberty-serverxml
+          subPath: server.xml
+        - mountPath: /opt/ibm/wlp/usr/servers/defaultServer/apps
+          name: dropins
+      volumes:
+      - configMap:
+          name: liberty-serverxml
+        name: liberty-serverxml
+      - name: dropins
+        nfs:
+          path: /app/IKS
+          server: 10.112.220.202
